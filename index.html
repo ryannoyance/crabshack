@@ -6,7 +6,6 @@
 <title>crabshack 🦀</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
   --bg: rgb(239, 243, 255);
   --surface: #fff;
@@ -18,20 +17,43 @@
   --blue: rgb(37, 99, 235);
   --green: rgb(1, 110, 92);
   --dark: rgb(22, 23, 24);
-  --nav-btn: rgb(35, 38, 37);
   --font: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
 }
-
 body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; }
+
+/* TOKEN GATE */
+.gate {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+}
+.gate-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 40px; max-width: 480px; width: 100%;
+  text-align: center;
+}
+.gate-box h1 { font-size: 28px; margin-bottom: 8px; }
+.gate-box p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.gate-input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+  border-radius: 6px; font-size: 13px; font-family: var(--font);
+  margin-bottom: 12px; outline: none;
+}
+.gate-input:focus { border-color: var(--blue); }
+.gate-btn {
+  width: 100%; padding: 10px; background: var(--orange); color: #fff;
+  border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+  font-family: var(--font); cursor: pointer;
+}
+.gate-btn:hover { opacity: .9; }
+.gate-error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
+.gate-hint { font-size: 11px; color: var(--dim); margin-top: 12px; }
 
 /* NAV */
 .nav {
   position: sticky; top: 0; z-index: 99;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  height: 56px;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 24px; gap: 12px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  height: 56px; display: flex; justify-content: space-between;
+  align-items: center; padding: 0 24px; gap: 12px;
 }
 .nav-left { display: flex; gap: 8px; align-items: center; }
 .nav-right { display: flex; gap: 8px; align-items: center; }
@@ -39,30 +61,29 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   display: inline-flex; align-items: center; justify-content: center;
   padding: 6px 14px; height: 34px; border: 0; border-radius: 6px;
   font-size: 12px; font-family: var(--font); font-weight: 500;
-  cursor: pointer; color: #fff; background: var(--nav-btn);
+  cursor: pointer; color: #fff; background: rgb(35,38,37);
   white-space: nowrap; text-decoration: none; transition: opacity .15s;
 }
 .btn:hover { opacity: .85; }
 .btn.orange { background: var(--orange); }
-.btn.green  { background: var(--green); }
-.btn.blue   { background: var(--blue); }
+.btn.ghost  { background: none; color: var(--muted); border: 1px solid var(--border); }
+.btn.ghost:hover { color: var(--text); }
 .issue-select {
   font-family: var(--font); font-size: 13px; font-weight: 600;
   border: 1px solid var(--border); border-radius: 6px;
   padding: 6px 10px; background: var(--surface); color: var(--text);
-  cursor: pointer; min-width: 160px;
+  cursor: pointer; min-width: 200px;
 }
 
 /* HERO */
 .hero {
   background: var(--dark); color: #fff;
   padding: 24px; text-align: center;
-  border-bottom: 1px solid #333;
 }
-.hero-issue { font-size: 32px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
+.hero-issue { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
 .hero-meta  { font-size: 13px; color: #9ca3af; }
 
-/* LOADING / ERROR */
+/* STATE */
 .state {
   max-width: 728px; margin: 60px auto; text-align: center;
   font-size: 15px; color: var(--muted); padding: 0 16px;
@@ -76,47 +97,32 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 
 /* CONTENT */
 .content { max-width: 728px; margin: 0 auto; padding: 32px 16px 80px; }
-
-/* COPY ACTIONS */
-.copy-bar {
-  display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
-}
-
-/* ISSUE BODY */
-.issue-body { font-size: 16px; line-height: 1.65; color: var(--text); }
+.copy-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.issue-body { font-size: 15px; line-height: 1.65; color: var(--text); }
 
 .section-heading {
-  font-size: 22px; font-weight: 800;
-  margin: 32px 0 12px; color: var(--text);
-  display: flex; align-items: center; gap: 6px;
+  font-size: 20px; font-weight: 800;
+  margin: 36px 0 14px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
 }
 .section-heading:first-child { margin-top: 0; }
 
-.link-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
-.link-item:last-child { border-bottom: none; }
-
-.link-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-.link-title a { color: var(--blue); text-decoration: underline; }
-.link-title a:hover { opacity: .8; }
-
-.link-outlet { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-
-.link-context { font-size: 14px; color: #374151; line-height: 1.55; margin-bottom: 6px; }
-
-.link-url { font-size: 12px; color: var(--dim); word-break: break-all; }
-.link-url a { color: var(--orange); }
-
+.link-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.link-item:last-child { border-bottom: none; margin-bottom: 0; }
+.link-outlet { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+.link-url a { color: var(--blue); font-size: 13px; word-break: break-all; }
+.link-context { font-size: 14px; color: #374151; line-height: 1.55; margin-top: 5px; }
+.link-suplink { font-size: 12px; margin-top: 4px; }
+.link-suplink a { color: var(--orange); }
 .attr { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
 
-/* COPY PREVIEW AREA */
 .copy-output {
-  background: var(--surface); border: 1px solid var(--border);
+  background: #1a1a1a; color: #e0e0e0;
   border-radius: 8px; padding: 20px;
-  font-size: 15px; line-height: 1.7;
+  font-size: 12px; font-family: monospace;
   white-space: pre-wrap; word-break: break-word;
-  max-height: 500px; overflow-y: auto;
-  display: none;
-  margin-top: 24px;
+  max-height: 400px; overflow-y: auto;
+  display: none; margin-top: 24px;
 }
 
 /* TOAST */
@@ -128,142 +134,174 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 }
 .toast.show { opacity: 1; }
 
-/* SECTION ORDER CONFIG */
-.config { display: none; }
-
 @media (max-width: 600px) {
   .nav { padding: 0 12px; }
-  .nav-right .btn { display: none; }
-  .hero-issue { font-size: 22px; }
+  .issue-select { min-width: 140px; font-size: 12px; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-left">
-    <select class="issue-select" id="issueSelect" onchange="loadIssue(this.value)">
-      <option value="">Loading issues…</option>
-    </select>
-  </div>
-  <div class="nav-right">
-    <button class="btn" onclick="copyIssueText()">📋 Copy Issue</button>
-    <button class="btn orange" onclick="copySubstackHTML()">⚡ Copy for Substack</button>
+<!-- TOKEN GATE -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <h1>🦀 crabshack</h1>
+    <p>Enter your Airtable Personal Access Token to continue.<br>It'll be saved in your browser.</p>
+    <input class="gate-input" id="tokenInput" type="password" placeholder="patXXXXXX..." autocomplete="off">
+    <button class="gate-btn" onclick="saveToken()">Connect to Airtable</button>
+    <div class="gate-error" id="gateError">Invalid token — couldn't reach Airtable.</div>
+    <div class="gate-hint">Token is stored in localStorage and never sent anywhere except Airtable's API.</div>
   </div>
 </div>
 
-<!-- HERO -->
-<div class="hero" id="hero">
-  <div class="hero-issue" id="heroTitle">crabshack 🦀</div>
-  <div class="hero-meta" id="heroMeta">Select an issue above</div>
-</div>
-
-<!-- MAIN -->
-<div class="content">
-  <div id="loadingState" class="state">
-    <div class="spinner"></div>
-    Fetching issues from Airtable…
-  </div>
-  <div id="errorState" class="state" style="display:none; color:#ef4444;"></div>
-  <div id="issueContent" style="display:none;">
-    <div class="copy-bar">
-      <button class="btn" onclick="copyIssueText()">📋 Copy plain text</button>
-      <button class="btn orange" onclick="copySubstackHTML()">⚡ Copy Substack-ready HTML</button>
-      <button class="btn" style="background:#444;" onclick="togglePreview()">👁 Toggle preview</button>
+<!-- APP (hidden until authed) -->
+<div id="app" style="display:none;">
+  <div class="nav">
+    <div class="nav-left">
+      <select class="issue-select" id="issueSelect" onchange="loadIssue(this.value)">
+        <option value="">Loading issues…</option>
+      </select>
     </div>
-    <div class="copy-output" id="copyPreview"></div>
-    <div class="issue-body" id="issueBody"></div>
+    <div class="nav-right">
+      <button class="btn" onclick="copyPlain()">📋 Copy text</button>
+      <button class="btn orange" onclick="copySubstack()">⚡ Copy for Substack</button>
+      <button class="btn ghost" onclick="togglePreview()">👁 Preview HTML</button>
+      <button class="btn ghost" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-issue" id="heroTitle">crabshack 🦀</div>
+    <div class="hero-meta" id="heroMeta">Select an issue</div>
+  </div>
+
+  <div class="content">
+    <div id="loadingState" class="state" style="display:none;">
+      <div class="spinner"></div>Loading…
+    </div>
+    <div id="errorState" class="state" style="display:none; color:#ef4444;"></div>
+    <div id="issueContent" style="display:none;">
+      <div class="copy-bar">
+        <button class="btn" onclick="copyPlain()">📋 Copy plain text</button>
+        <button class="btn orange" onclick="copySubstack()">⚡ Copy for Substack</button>
+        <button class="btn ghost" onclick="togglePreview()">👁 Preview HTML</button>
+      </div>
+      <div class="copy-output" id="copyPreview"></div>
+      <div class="issue-body" id="issueBody"></div>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const TOKEN = 'patAqKd0pynku63rx.4dba983b26185640b3656fece4be18ada3ad668c9cd9a465d54cc0ff128add59';
-const BASE  = 'appdZxHrsaZRxyx0H';
+const BASE         = 'appdZxHrsaZRxyx0H';
 const ISSUES_TABLE = 'tblDg4PW4ZhXPvXuc';
 const LINKS_TABLE  = 'tbl6G5RaBCdqIIf7p';
+const TOKEN_KEY    = 'crabshack_token';
 
-// Section order + emoji map matching the real crabshack layout
 const SECTION_ORDER = [
-  'Viral Topics',
-  'Shell 1',
-  'Trending',
-  'Brand News',
-  'Brand W',
-  'Industry News',
-  'Hey, So That\'s Bad!',
-  'Aesthetic',
-  'Entertainment',
+  'Viral Topics','Shell 1','Trending','Brand News','Brand W',
+  'Industry News',"Hey, So That's Bad!",'Aesthetic','Entertainment'
 ];
-
 const SECTION_EMOJI = {
-  'Viral Topics':       '🦀📱 Viral Topics',
-  'Shell 1':            '🐚 Shell 1',
-  'Trending':           '🦀 Trending',
-  'Brand News':         '🦀 Brand News',
-  'Brand W':            '🏆🦀 Brand W',
-  'Industry News':      '📡🥴🦀 Industry News',
+  'Viral Topics':        '🦀📱 Viral Topics',
+  'Shell 1':             '🐚 Shell 1',
+  'Trending':            '🦀 Trending',
+  'Brand News':          '🦀 Brand News',
+  'Brand W':             '🏆🦀 Brand W',
+  'Industry News':       '📡🥴🦀 Industry News',
   "Hey, So That's Bad!":'💥🦀 Hey, So That\'s Bad!',
-  'Aesthetic':          '🎀🦀 Aesthetic',
-  'Entertainment':      '🎧🍿🦀 Entertainment',
+  'Aesthetic':           '🎀🦀 Aesthetic',
+  'Entertainment':       '🎧🍿🦀 Entertainment',
 };
 
-async function airtable(table, params = '') {
+let TOKEN = '';
+let allIssues = [];
+let currentLinks = [];
+
+// ── AUTH ──────────────────────────────────────────────
+function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
+
+async function saveToken() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) return;
+  // Validate by hitting the API
+  try {
+    const res = await fetch(
+      `https://api.airtable.com/v0/${BASE}/${ISSUES_TABLE}?maxRecords=1`,
+      { headers: { Authorization: `Bearer ${val}` } }
+    );
+    if (!res.ok) throw new Error();
+    localStorage.setItem(TOKEN_KEY, val);
+    TOKEN = val;
+    showApp();
+  } catch {
+    document.getElementById('gateError').style.display = 'block';
+  }
+}
+
+function signOut() {
+  localStorage.removeItem(TOKEN_KEY);
+  location.reload();
+}
+
+function showApp() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  init();
+}
+
+// ── AIRTABLE ──────────────────────────────────────────
+async function at(table, qs = '') {
   const res = await fetch(
-    `https://api.airtable.com/v0/${BASE}/${table}${params}`,
+    `https://api.airtable.com/v0/${BASE}/${table}?${qs}`,
     { headers: { Authorization: `Bearer ${TOKEN}` } }
   );
-  if (!res.ok) throw new Error(`Airtable error: ${res.status}`);
+  if (!res.ok) throw new Error(`Airtable ${res.status}`);
   return res.json();
 }
 
-async function fetchAllRecords(table, params = '') {
-  let records = [], offset = null;
+async function fetchAll(table, qs = '') {
+  let records = [], offset;
   do {
-    const p = offset ? `${params}&offset=${offset}` : params;
-    const data = await airtable(table, `?${p}`);
-    records = records.concat(data.records || []);
-    offset = data.offset;
+    const q = offset ? `${qs}&offset=${offset}` : qs;
+    const d = await at(table, q);
+    records = records.concat(d.records || []);
+    offset = d.offset;
   } while (offset);
   return records;
 }
 
-let allIssues = [];
-let currentLinks = [];
-
+// ── INIT ──────────────────────────────────────────────
 async function init() {
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('loadingState').innerHTML = '<div class="spinner"></div>Fetching issues…';
   try {
-    // Fetch issues sorted by created time desc
-    const issues = await fetchAllRecords(ISSUES_TABLE, 'sort[0][field]=Created&sort[0][direction]=desc&maxRecords=50');
+    const issues = await fetchAll(ISSUES_TABLE,
+      'sort[0][field]=Created&sort[0][direction]=desc&fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
+    );
     allIssues = issues;
 
-    const select = document.getElementById('issueSelect');
-    select.innerHTML = '';
-
+    const sel = document.getElementById('issueSelect');
+    sel.innerHTML = '';
     issues.forEach((issue, i) => {
-      const f = issue.fields;
-      const date = new Date(issue.createdTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const status = f['Publishing Status'] || 'Draft';
-      const label = `Issue ${issues.length - i} — ${date} (${status})`;
+      const date = new Date(issue.createdTime).toLocaleDateString('en-US',
+        { month: 'short', day: 'numeric', year: 'numeric' });
+      const status = issue.fields['Publishing Status'] || 'Draft';
+      const n = issues.length - i;
       const opt = document.createElement('option');
       opt.value = issue.id;
-      opt.textContent = label;
-      select.appendChild(opt);
+      opt.textContent = `Issue #${n} — ${date} (${status})`;
+      sel.appendChild(opt);
     });
 
     document.getElementById('loadingState').style.display = 'none';
-
-    if (issues.length > 0) {
-      loadIssue(issues[0].id);
-    }
-  } catch(e) {
-    document.getElementById('loadingState').style.display = 'none';
-    showError(e.message);
-  }
+    if (issues.length) loadIssue(issues[0].id);
+  } catch(e) { showError(e.message); }
 }
 
+// ── LOAD ISSUE ────────────────────────────────────────
 async function loadIssue(issueId) {
   if (!issueId) return;
   const issue = allIssues.find(i => i.id === issueId);
@@ -274,129 +312,82 @@ async function loadIssue(issueId) {
   document.getElementById('loadingState').innerHTML = '<div class="spinner"></div>Loading links…';
 
   try {
-    const f = issue.fields;
-    const linkIds = f['Links'] || [];
-    const date = new Date(issue.createdTime).toLocaleDateString('en-US', {
-      month: 'long', day: 'numeric', year: 'numeric'
-    });
+    const n = allIssues.length - allIssues.indexOf(issue);
+    const date = new Date(issue.createdTime).toLocaleDateString('en-US',
+      { month: 'long', day: 'numeric', year: 'numeric' });
+    const linkCount = (issue.fields['Links'] || []).length;
 
-    // Update hero
-    const issueNum = allIssues.indexOf(issue);
-    document.getElementById('heroTitle').textContent = `Issue #${allIssues.length - issueNum} — ${date}`;
+    document.getElementById('heroTitle').textContent = `Issue #${n} — ${date}`;
     document.getElementById('heroMeta').textContent =
-      `${linkIds.length} links · ${f['Publishing Status'] || 'Draft'}`;
+      `${linkCount} links · ${issue.fields['Publishing Status'] || 'Draft'}`;
 
-    // Fetch all links for this issue filtered by Issue field
-    // Use filterByFormula to get only links for this issue
-    const formula = encodeURIComponent(`{Issue} = "${issueId}"`);
-    let links = [];
-    try {
-      links = await fetchAllRecords(LINKS_TABLE,
-        `filterByFormula=SEARCH("${issueId}",ARRAYJOIN({Issue}))&fields[]=URL&fields[]=Category&fields[]=Website Body&fields[]=OG Discord Message&fields[]=Status&fields[]=Outlet`
-      );
-    } catch(e) {
-      // fallback: fetch by ID chunks
-      links = await fetchLinksByIds(linkIds);
-    }
+    // Fetch links for this issue
+    const formula = encodeURIComponent(`SEARCH("${issueId}", ARRAYJOIN(Issue, ","))`);
+    const links = await fetchAll(LINKS_TABLE,
+      `filterByFormula=${formula}&fields[]=URL&fields[]=Category&fields[]=OG+Discord+Message&fields[]=Status`
+    );
 
-    // Filter to Ready for Substack or Published
-    const readyLinks = links.filter(l => {
+    const ready = links.filter(l => {
       const s = l.fields['Status'];
-      return !s || s === 'Ready for Substack' || s === 'Published' || s === 'Approved';
+      return !s || ['Ready for Substack','Published','Approved'].includes(s);
     });
 
-    currentLinks = readyLinks;
-    renderIssue(issue, readyLinks);
-
-  } catch(e) {
-    showError(e.message);
-  }
+    currentLinks = ready;
+    renderIssue(ready);
+  } catch(e) { showError(e.message); }
 }
 
-async function fetchLinksByIds(ids) {
-  // Fetch in chunks of 10
-  const chunks = [];
-  for (let i = 0; i < ids.length; i += 10) chunks.push(ids.slice(i, i + 10));
-  let all = [];
-  for (const chunk of chunks) {
-    const formula = encodeURIComponent('OR(' + chunk.map(id => `RECORD_ID()="${id}"`).join(',') + ')');
-    const data = await fetchAllRecords(LINKS_TABLE,
-      `filterByFormula=${formula}&fields[]=URL&fields[]=Category&fields[]=Website Body&fields[]=OG Discord Message&fields[]=Status&fields[]=Outlet`
-    );
-    all = all.concat(data);
-  }
-  return all;
-}
-
-function parseContext(link) {
-  // Extract context from OG Discord Message JSON
-  const og = link.fields['OG Discord Message'] || '';
+// ── RENDER ────────────────────────────────────────────
+function parseOG(link) {
   try {
-    const jsonStr = og.replace(/^LINK:\s*/, '');
-    const parsed = JSON.parse(jsonStr);
+    const raw = (link.fields['OG Discord Message'] || '').replace(/^LINK:\s*/, '');
+    const p = JSON.parse(raw);
     return {
-      context: parsed.context || '',
-      suplink: parsed.suplink || '',
-      goodRead: parsed.good_read || '',
-      resource: parsed.resource || '',
-      submittedBy: parsed.submitted_by || '',
+      context: p.context || '',
+      suplink: p.suplink || '',
+      goodRead: p.good_read || '',
+      submittedBy: (p.submitted_by || '').replace(/^qwn/, ''),
     };
-  } catch {
-    return { context: '', suplink: '', goodRead: '', resource: '', submittedBy: '' };
-  }
+  } catch { return { context:'', suplink:'', goodRead:'', submittedBy:'' }; }
 }
 
-function getOutletName(link) {
-  // Outlet is a linked record — just show the record ID hint or leave blank
-  // In a full implementation you'd resolve it; for now parse from URL
+function outletFromURL(url) {
   try {
-    const url = new URL(link.fields['URL'] || '');
-    return url.hostname.replace('www.', '').replace('.com','').replace('.org','');
+    return new URL(url).hostname.replace('www.','');
   } catch { return ''; }
 }
 
-function renderIssue(issue, links) {
-  // Group by category
+function groupLinks(links) {
   const grouped = {};
-  links.forEach(link => {
-    const cat = link.fields['Category'] || 'Uncategorized';
+  links.forEach(l => {
+    const cat = l.fields['Category'] || 'Uncategorized';
     if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(link);
+    grouped[cat].push(l);
   });
-
-  // Build HTML
   const sections = [];
-
-  // Ordered sections first
   SECTION_ORDER.forEach(cat => {
-    if (grouped[cat]) {
-      sections.push({ cat, links: grouped[cat] });
-      delete grouped[cat];
-    }
+    if (grouped[cat]) { sections.push({ cat, links: grouped[cat] }); delete grouped[cat]; }
   });
+  Object.entries(grouped).forEach(([cat, lnks]) => sections.push({ cat, links: lnks }));
+  return sections;
+}
 
-  // Remaining categories
-  Object.entries(grouped).forEach(([cat, lnks]) => {
-    sections.push({ cat, links: lnks });
-  });
-
+function renderIssue(links) {
+  const sections = groupLinks(links);
   let html = '';
   sections.forEach(({ cat, links }) => {
     const heading = SECTION_EMOJI[cat] || `🦀 ${cat}`;
     html += `<div class="section-heading">${heading}</div>`;
     links.forEach(link => {
-      const f = link.fields;
-      const url = f['URL'] || '';
-      const ctx = parseContext(link);
-      const outlet = getOutletName(link);
-      const title = url; // We don't have a title field — use URL as anchor; Substack will preview it
-
+      const url = link.fields['URL'] || '';
+      const og = parseOG(link);
+      const outlet = outletFromURL(url);
       html += `<div class="link-item">`;
       if (outlet) html += `<div class="link-outlet">${outlet}</div>`;
       html += `<div class="link-url"><a href="${url}" target="_blank">${url}</a></div>`;
-      if (ctx.context) html += `<div class="link-context">${ctx.context}</div>`;
-      if (ctx.suplink) html += `<div class="link-url"><a href="${ctx.suplink}" target="_blank">${ctx.suplink}</a></div>`;
-      if (ctx.submittedBy) html += `<div class="attr">[🦀 ${ctx.submittedBy.replace(/^qwn/, '')}]</div>`;
+      if (og.context) html += `<div class="link-context">${og.context}</div>`;
+      if (og.suplink) html += `<div class="link-suplink"><a href="${og.suplink}" target="_blank">${og.suplink}</a></div>`;
+      if (og.submittedBy) html += `<div class="attr">[🦀 ${og.submittedBy}]</div>`;
       html += `</div>`;
     });
   });
@@ -406,109 +397,79 @@ function renderIssue(issue, links) {
   document.getElementById('issueContent').style.display = 'block';
 }
 
-function buildSubstackHTML(links) {
-  // Build clean pasteable HTML for Substack WYSIWYG
-  const grouped = {};
-  links.forEach(link => {
-    const cat = link.fields['Category'] || 'Uncategorized';
-    if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(link);
-  });
-
-  const sections = [];
-  SECTION_ORDER.forEach(cat => {
-    if (grouped[cat]) { sections.push({ cat, links: grouped[cat] }); delete grouped[cat]; }
-  });
-  Object.entries(grouped).forEach(([cat, lnks]) => sections.push({ cat, links: lnks }));
-
+// ── COPY ──────────────────────────────────────────────
+function buildSubstackHTML() {
+  const sections = groupLinks(currentLinks);
   let out = '';
   sections.forEach(({ cat, links }) => {
-    const heading = SECTION_EMOJI[cat] || `🦀 ${cat}`;
-    out += `<h2>${heading}</h2>\n`;
+    out += `<h2>${SECTION_EMOJI[cat] || '🦀 ' + cat}</h2>\n`;
     links.forEach(link => {
-      const f = link.fields;
-      const url = f['URL'] || '';
-      const ctx = parseContext(link);
-      const outlet = getOutletName(link);
-
+      const url = link.fields['URL'] || '';
+      const og = parseOG(link);
+      const outlet = outletFromURL(url);
       out += `<p>`;
       if (outlet) out += `<strong>(${outlet})</strong> `;
       out += `<a href="${url}">${url}</a>`;
-      if (ctx.context) out += `<br>${ctx.context}`;
-      if (ctx.submittedBy) out += `<br><em>[🦀 ${ctx.submittedBy.replace(/^qwn/, '')}]</em>`;
+      if (og.context) out += `<br>${og.context}`;
+      if (og.submittedBy) out += `<br><em>[🦀 ${og.submittedBy}]</em>`;
       out += `</p>\n`;
-
-      if (ctx.suplink) out += `<p><a href="${ctx.suplink}">${ctx.suplink}</a></p>\n`;
+      if (og.suplink) out += `<p><a href="${og.suplink}">${og.suplink}</a></p>\n`;
     });
     out += '\n';
   });
   return out;
 }
 
-function buildPlainText(links) {
-  const grouped = {};
-  links.forEach(link => {
-    const cat = link.fields['Category'] || 'Uncategorized';
-    if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(link);
-  });
-  const sections = [];
-  SECTION_ORDER.forEach(cat => {
-    if (grouped[cat]) { sections.push({ cat, links: grouped[cat] }); delete grouped[cat]; }
-  });
-  Object.entries(grouped).forEach(([cat, lnks]) => sections.push({ cat, links: lnks }));
-
+function buildPlainText() {
+  const sections = groupLinks(currentLinks);
   let out = '';
   sections.forEach(({ cat, links }) => {
-    const heading = SECTION_EMOJI[cat] || `🦀 ${cat}`;
-    out += `\n${heading}\n${'─'.repeat(40)}\n\n`;
+    out += `\n${SECTION_EMOJI[cat] || '🦀 ' + cat}\n${'─'.repeat(40)}\n\n`;
     links.forEach(link => {
-      const f = link.fields;
-      const url = f['URL'] || '';
-      const ctx = parseContext(link);
-      const outlet = getOutletName(link);
-      if (outlet) out += `[${outlet}] `;
+      const url = link.fields['URL'] || '';
+      const og = parseOG(link);
       out += `${url}\n`;
-      if (ctx.context) out += `${ctx.context}\n`;
-      if (ctx.submittedBy) out += `[🦀 ${ctx.submittedBy.replace(/^qwn/, '')}]\n`;
+      if (og.context) out += `${og.context}\n`;
+      if (og.submittedBy) out += `[🦀 ${og.submittedBy}]\n`;
+      if (og.suplink) out += `${og.suplink}\n`;
       out += '\n';
     });
   });
   return out.trim();
 }
 
-async function copyIssueText() {
-  const text = buildPlainText(currentLinks);
-  await navigator.clipboard.writeText(text);
-  showToast('✓ Plain text copied!');
+async function copyPlain() {
+  await navigator.clipboard.writeText(buildPlainText());
+  toast('✓ Plain text copied!');
 }
 
-async function copySubstackHTML() {
-  const html = buildSubstackHTML(currentLinks);
-  // Copy as both HTML and plain text
+async function copySubstack() {
+  const html = buildSubstackHTML();
   try {
-    const blob = new Blob([html], { type: 'text/html' });
-    const textBlob = new Blob([html], { type: 'text/plain' });
     await navigator.clipboard.write([
-      new ClipboardItem({ 'text/html': blob, 'text/plain': textBlob })
+      new ClipboardItem({
+        'text/html': new Blob([html], { type: 'text/html' }),
+        'text/plain': new Blob([html], { type: 'text/plain' }),
+      })
     ]);
-    showToast('✓ Substack HTML copied — paste into editor!');
+    toast('✓ Substack HTML copied — paste into editor!');
   } catch {
     await navigator.clipboard.writeText(html);
-    showToast('✓ HTML copied as text');
+    toast('✓ HTML copied as plain text');
   }
 }
 
 function togglePreview() {
   const el = document.getElementById('copyPreview');
   if (el.style.display === 'none' || !el.style.display) {
+    el.textContent = buildSubstackHTML();
     el.style.display = 'block';
-    el.textContent = buildSubstackHTML(currentLinks);
   } else {
     el.style.display = 'none';
   }
 }
 
+// ── UTILS ─────────────────────────────────────────────
 function showError(msg) {
   document.getElementById('loadingState').style.display = 'none';
   const el = document.getElementById('errorState');
@@ -516,14 +477,20 @@ function showError(msg) {
   el.textContent = `Error: ${msg}`;
 }
 
-function showToast(msg) {
+function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-init();
+// ── BOOT ──────────────────────────────────────────────
+TOKEN = getToken();
+if (TOKEN) {
+  showApp();
+} else {
+  document.getElementById('gate').style.display = 'flex';
+}
 </script>
 </body>
 </html>
