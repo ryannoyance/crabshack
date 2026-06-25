@@ -279,8 +279,10 @@ async function init() {
   document.getElementById('loadingState').innerHTML = '<div class="spinner"></div>Fetching issues…';
   try {
     const issues = await fetchAll(ISSUES_TABLE,
-      'sort[0][field]=Created&sort[0][direction]=desc&fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
+      'fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
     );
+    // Sort by createdTime desc (most recent first)
+    issues.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
     allIssues = issues;
 
     const sel = document.getElementById('issueSelect');
