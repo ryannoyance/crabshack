@@ -110,6 +110,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 .link-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
 .link-item:last-child { border-bottom: none; margin-bottom: 0; }
 .link-outlet { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+.link-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.link-title a { color: var(--text); text-decoration: none; }
+.link-title a:hover { color: var(--blue); text-decoration: underline; }
+.link-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.link-title a { color: var(--text); text-decoration: none; }
+.link-title a:hover { color: var(--blue); text-decoration: underline; }
 .link-url a { color: var(--blue); font-size: 13px; word-break: break-all; }
 .link-context { font-size: 14px; color: #374151; line-height: 1.55; margin-top: 5px; }
 .link-suplink { font-size: 12px; margin-top: 4px; }
@@ -198,6 +204,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 const BASE         = 'appdZxHrsaZRxyx0H';
 const ISSUES_TABLE = 'tblDg4PW4ZhXPvXuc';
 const LINKS_TABLE  = 'tbl6G5RaBCdqIIf7p';
+const LINKS_VIEW   = 'use staging.silencebrand.social for export!!';
 const TOKEN_KEY    = 'crabshack_token';
 
 const SECTION_ORDER = [
@@ -345,10 +352,12 @@ async function loadIssue(issueId) {
     document.getElementById('heroMeta').textContent =
       `${linkCount} links · ${issue.fields['Publishing Status'] || 'Draft'}`;
 
-    // Fetch links for this issue
-    const formula = encodeURIComponent(`SEARCH("${issueId}", ARRAYJOIN(Issue, ","))`);
+    // Fetch links from the export view
     const links = await fetchAll(LINKS_TABLE,
-      `filterByFormula=${formula}&fields[]=URL&fields[]=Category&fields[]=OG+Discord+Message&fields[]=Status`
+      'view=' + encodeURIComponent(LINKS_VIEW) +
+      '&fields[]=Title&fields[]=URL&fields[]=Category' +
+      '&fields[]=Supportive+Content+URL&fields[]=Link+Summary' +
+      '&fields[]=Submitter&fields[]=Name+(from+Outlet)&fields[]=Status'
     );
 
     const ready = links.filter(l => {
@@ -363,16 +372,19 @@ async function loadIssue(issueId) {
 
 // ── RENDER ────────────────────────────────────────────
 function parseOG(link) {
-  try {
-    const raw = (link.fields['OG Discord Message'] || '').replace(/^LINK:\s*/, '');
-    const p = JSON.parse(raw);
-    return {
-      context: p.context || '',
-      suplink: p.suplink || '',
-      goodRead: p.good_read || '',
-      submittedBy: (p.submitted_by || '').replace(/^qwn/, ''),
-    };
-  } catch { return { context:'', suplink:'', goodRead:'', submittedBy:'' }; }
+  const f = link.fields;
+  let context = '';
+  if (f['Link Summary'] && f['Link Summary'].value) context = f['Link Summary'].value;
+  const submitters = f['Submitter'] || [];
+  const submittedBy = submitters.map(s => s.replace(/^qwn/, '')).join(', ');
+  const outlet = (f['Name (from Outlet)'] || []).join(', ');
+  return {
+    title: f['Title'] || '',
+    context,
+    suplink: f['Supportive Content URL'] || '',
+    submittedBy,
+    outlet,
+  };
 }
 
 function outletFromURL(url) {
@@ -405,10 +417,10 @@ function renderIssue(links) {
     links.forEach(link => {
       const url = link.fields['URL'] || '';
       const og = parseOG(link);
-      const outlet = outletFromURL(url);
       html += `<div class="link-item">`;
-      if (outlet) html += `<div class="link-outlet">${outlet}</div>`;
-      html += `<div class="link-url"><a href="${url}" target="_blank">${url}</a></div>`;
+      if (og.outlet) html += `<div class="link-outlet">${og.outlet}</div>`;
+      if (og.title) html += `<div class="link-title"><a href="${url}" target="_blank">${og.title}</a></div>`;
+      else html += `<div class="link-url"><a href="${url}" target="_blank">${url}</a></div>`;
       if (og.context) html += `<div class="link-context">${og.context}</div>`;
       if (og.suplink) html += `<div class="link-suplink"><a href="${og.suplink}" target="_blank">${og.suplink}</a></div>`;
       if (og.submittedBy) html += `<div class="attr">[🦀 ${og.submittedBy}]</div>`;
@@ -430,14 +442,14 @@ function buildSubstackHTML() {
     links.forEach(link => {
       const url = link.fields['URL'] || '';
       const og = parseOG(link);
-      const outlet = outletFromURL(url);
-      out += `<p>`;
-      if (outlet) out += `<strong>(${outlet})</strong> `;
-      out += `<a href="${url}">${url}</a>`;
-      if (og.context) out += `<br>${og.context}`;
-      if (og.submittedBy) out += `<br><em>[🦀 ${og.submittedBy}]</em>`;
-      out += `</p>\n`;
-      if (og.suplink) out += `<p><a href="${og.suplink}">${og.suplink}</a></p>\n`;
+      out += '<p>';
+      if (og.outlet) out += '<strong>(' + og.outlet + ')</strong> ';
+      if (og.title) out += '<strong><a href="' + url + '">' + og.title + '</a></strong>';
+      else out += '<a href="' + url + '">' + url + '</a>';
+      if (og.context) out += '<br>' + og.context;
+      if (og.submittedBy) out += '<br><em>[🦀 ' + og.submittedBy + ']</em>';
+      out += '</p>\n';
+      if (og.suplink) out += '<p><a href="' + og.suplink + '">' + og.suplink + '</a></p>\n';
     });
     out += '\n';
   });
@@ -452,10 +464,11 @@ function buildPlainText() {
     links.forEach(link => {
       const url = link.fields['URL'] || '';
       const og = parseOG(link);
-      out += `${url}\n`;
-      if (og.context) out += `${og.context}\n`;
-      if (og.submittedBy) out += `[🦀 ${og.submittedBy}]\n`;
-      if (og.suplink) out += `${og.suplink}\n`;
+      if (og.title) out += og.title + '\n';
+      out += url + '\n';
+      if (og.context) out += og.context + '\n';
+      if (og.submittedBy) out += '[🦀 ' + og.submittedBy + ']\n';
+      if (og.suplink) out += og.suplink + '\n';
       out += '\n';
     });
   });
