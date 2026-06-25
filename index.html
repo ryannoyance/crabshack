@@ -116,8 +116,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   margin: 24px 0;
 }
 .issue-body .section { margin-bottom: 8px; }
-.issue-body .sup-link { display:block; font-size:14px; margin-top:4px; color:#6b7280; }
-.issue-body .sup-link a { color:#6b7280; font-size:14px; }
+.issue-body .sup-link { display:block; font-size:14px; margin-top:4px; }
+.issue-body .sup-link a { color:#f26849; font-size:14px; }
 
 /* HTML preview */
 .copy-output { background:#1a1a1a; color:#e0e0e0; border-radius:8px; padding:20px; font-size:12px; font-family:monospace; white-space:pre-wrap; word-break:break-word; max-height:400px; overflow-y:auto; display:none; margin-top:24px; }
@@ -405,6 +405,7 @@ function renderLink(item, style) {
       html += '<li>';
       html += esc(title);
       if (outlet) html += ' (<a style="text-decoration:underline;" href="' + esc(url) + '">' + esc(outlet) + '</a>)';
+      if (supUrl) html += '<span class="sup-link"><a href="' + esc(supUrl) + '">' + esc(supUrl) + '</a></span>';
       if (description) {
         html += '<ul><li>' + esc(description) + '[' + esc(submitter) + ']</li></ul>';
       }
@@ -412,7 +413,6 @@ function renderLink(item, style) {
         html += '<blockquote><span>' + esc(context) + '</span>[🦀 <span><a href="' + esc(creditTo) + '">' + esc(submitter) + '</a></span>]</blockquote>';
       }
       html += '</li>';
-      if (supUrl) html += '<span class="sup-link"><a href="' + esc(supUrl) + '">' + esc(supUrl) + '</a></span>';
     }
   }
 
