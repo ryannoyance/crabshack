@@ -183,9 +183,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 const BASE          = 'appdZxHrsaZRxyx0H';
 const ISSUES_TABLE  = 'tblDg4PW4ZhXPvXuc';
 const LINKS_TABLE   = 'tbl6G5RaBCdqIIf7p';
-const TRENDS_TABLE  = 'tblIiJbRPNFnl2Ats'; // from collection f54acec2
+const TRENDS_TABLE  = 'tbll7hcwKBiF21pev'; // confirmed from network tab
 const LINKS_VIEW    = 'use staging.silencebrand.social for export!!';
-const CURRENT_VIEW  = 'ONLY OPEN ISSUE';
+const CURRENT_VIEW  = 'ONLY OPEN ISSUE'; // viw confirmed working
 const TOKEN_KEY     = 'crabshack_token';
 
 // Section order + headings exactly as in WeWeb
@@ -265,7 +265,7 @@ async function init() {
   document.getElementById('loadingState').style.display = 'block';
   try {
     const [currentIssues, allForDropdown] = await Promise.all([
-      fetchAll(ISSUES_TABLE, 'view=' + encodeURIComponent(CURRENT_VIEW) + '&fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+%23&fields[]=Issue+Date'),
+      fetchAll(ISSUES_TABLE, 'view=ONLY+OPEN+ISSUE&fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+%23&fields[]=Issue+Date'),
       fetchAll(ISSUES_TABLE, 'fields[]=Publishing+Status&fields[]=Issue+%23&fields[]=Issue+Date')
     ]);
 
