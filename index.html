@@ -273,33 +273,55 @@ async function fetchAll(table, qs = '') {
   return records;
 }
 
-// ── INIT ──────────────────────────────────────────────
+// INIT
 async function init() {
   document.getElementById('loadingState').style.display = 'block';
-  document.getElementById('loadingState').innerHTML = '<div class="spinner"></div>Fetching issues…';
+  document.getElementById('loadingState').innerHTML = '<div class="spinner"></div>Fetching issues...';
   try {
-    const issues = await fetchAll(ISSUES_TABLE,
-      'fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
-    );
-    // Sort by createdTime desc (most recent first)
-    issues.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
-    allIssues = issues;
+    const [currentIssues, allForDropdown] = await Promise.all([
+      fetchAll(ISSUES_TABLE,
+        'view=viw0lxlQWwL0me2FJ&fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
+      ),
+      fetchAll(ISSUES_TABLE,
+        'fields[]=Publishing+Status&fields[]=Links&fields[]=Issue+Preview&fields[]=checklist_blurb'
+      )
+    ]);
 
+    allForDropdown.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+    allIssues = allForDropdown;
+
+    const currentId = currentIssues.length ? currentIssues[0].id : null;
     const sel = document.getElementById('issueSelect');
     sel.innerHTML = '';
-    issues.forEach((issue, i) => {
+
+    if (currentId) {
+      const cur = allForDropdown.find(i => i.id === currentId);
+      const date = cur ? new Date(cur.createdTime).toLocaleDateString('en-US',
+        { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+      const opt = document.createElement('option');
+      opt.value = currentId;
+      opt.textContent = 'Current Issue -- ' + date;
+      sel.appendChild(opt);
+      const divider = document.createElement('option');
+      divider.disabled = true;
+      divider.textContent = '──────────────';
+      sel.appendChild(divider);
+    }
+
+    allForDropdown.forEach((issue, i) => {
+      if (issue.id === currentId) return;
       const date = new Date(issue.createdTime).toLocaleDateString('en-US',
         { month: 'short', day: 'numeric', year: 'numeric' });
       const status = issue.fields['Publishing Status'] || 'Draft';
-      const n = issues.length - i;
+      const n = allForDropdown.length - i;
       const opt = document.createElement('option');
       opt.value = issue.id;
-      opt.textContent = `Issue #${n} — ${date} (${status})`;
+      opt.textContent = 'Issue #' + n + ' -- ' + date + ' (' + status + ')';
       sel.appendChild(opt);
     });
 
     document.getElementById('loadingState').style.display = 'none';
-    if (issues.length) loadIssue(issues[0].id);
+    loadIssue(currentId || (allForDropdown.length ? allForDropdown[0].id : null));
   } catch(e) { showError(e.message); }
 }
 
