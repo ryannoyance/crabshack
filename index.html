@@ -325,12 +325,7 @@ async function loadIssue(issueId) {
     // Fetch links and trends in parallel
     const [links, trends] = await Promise.all([
       fetchAll(LINKS_TABLE,
-        'view=' + encodeURIComponent(LINKS_VIEW) +
-        '&fields[]=Title&fields[]=URL&fields[]=Category' +
-        '&fields[]=Context&fields[]=Description' +
-        '&fields[]=Supportive+Content+URL&fields[]=Link+Summary' +
-        '&fields[]=Submitter&fields[]=Name+(from+Outlet)' +
-        '&fields[]=Good+Read%3F&fields[]=Resource%3F&fields[]=Credit+to&fields[]=Status'
+        'view=' + encodeURIComponent(LINKS_VIEW)
       ),
       fetchAll(TRENDS_TABLE,
         'fields[]=Name&fields[]=Formatted+Blurb&fields[]=List+of+examples&fields[]=Fresh+Catch%3F&fields[]=Status'
